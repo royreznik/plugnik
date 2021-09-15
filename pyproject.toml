@@ -9,6 +9,7 @@ python = "^3.9"
 fastapi = "^0.68.1"
 uvicorn = "^0.15.0"
 lxml = "^4.6.3"
+aiofiles = "^0.7.0"
 
 [tool.poetry.dev-dependencies]
 ipython = "^7.27.0"
