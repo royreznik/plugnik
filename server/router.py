@@ -1,12 +1,12 @@
 import io
-import zipfile
 from pathlib import Path
 
-from fastapi import FastAPI, Response, UploadFile, File, HTTPException
+from fastapi import FastAPI, File, HTTPException, Response, UploadFile
+from fastapi.responses import FileResponse
 from lxml import etree
 from lxml.etree import _ElementTree as ElementTree
-from fastapi.responses import FileResponse
-from .utils import xml_parser, add_new_jar_plugin, add_new_zip_plugin
+
+from .utils import add_new_jar_plugin, add_new_zip_plugin, xml_parser
 
 app = FastAPI()
 # TODO: Extract to config
@@ -36,6 +36,8 @@ async def upload(plugin: UploadFile = File(...)):
     if not filename.suffix == ".jar":
         raise HTTPException(status_code=400, detail="You must upload a .jar file!")
     jar_data = await plugin.read()
+    if isinstance(jar_data, str):
+        jar_data = jar_data.encode()
     jar_fileobject = io.BytesIO(jar_data)
     add_new_jar_plugin(plugins_tree, jar_fileobject, filename.name)
     (plugins_folder / filename.name).write_bytes(jar_data)
@@ -48,6 +50,8 @@ async def upload_zip(plugin: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="You must upload a .zip file!")
 
     zip_data = await plugin.read()
+    if isinstance(zip_data, str):
+        zip_data = zip_data.encode()
     zip_fileobject = io.BytesIO(zip_data)
     add_new_zip_plugin(plugins_tree, zip_fileobject, filename, filename.name)
     (plugins_folder / filename.name).write_bytes(zip_data)
