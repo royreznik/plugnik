@@ -1,1 +1,1 @@
-from .router import app
+from .router import app  # noqa: F401
