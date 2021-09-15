@@ -1,0 +1,6 @@
+<plugins>
+  <plugin id="reznik.reznik" url="/tmp/plugins/reznik.jar" version="0.0.0-000">
+    <idea-version since-build="212.4746.13" until-build="*.*"/>
+    <name>Reznik</name>
+  </plugin>
+</plugins>
