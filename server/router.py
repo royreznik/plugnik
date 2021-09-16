@@ -13,9 +13,11 @@ from starlette.responses import JSONResponse
 from .plugin_manager import (
     add_new_jar_plugin,
     add_new_zip_plugin,
+    get_all_plugins_xml_string,
+    get_plugin_file_path,
     remove_plugin_file,
     remove_plugin_xml,
-    save_plugin_file, get_plugin_file_path, get_all_plugins_xml_string,
+    save_plugin_file,
 )
 from .utils import validate_extension
 
@@ -27,9 +29,7 @@ app = FastAPI()
 # noinspection PyUnusedLocal
 @app.get("/")
 async def all_plugins(build: str) -> Response:
-    return Response(
-        content=get_all_plugins_xml_string(), media_type="application/xml"
-    )
+    return Response(content=get_all_plugins_xml_string(), media_type="application/xml")
 
 
 @app.get("/get_plugin/{name}")
