@@ -3,7 +3,11 @@ from pathlib import Path
 from typing import IO
 
 from lxml import etree
+
+# noinspection PyProtectedMember
 from lxml.etree import _ElementTree as ElementTree
+
+from .settings import settings
 
 xml_parser = etree.XMLParser(remove_blank_text=True)
 
@@ -14,7 +18,9 @@ def add_new_zip_plugin(
     zip_file = zipfile.ZipFile(zip_fileobject)
     jar_plugin_name = zip_name.with_suffix(".jar").name
     jar_plugin_path = [i for i in zip_file.namelist() if jar_plugin_name in i][0]
-    return add_new_jar_plugin(plugins_tree, zip_file.open(jar_plugin_path), zip_name.name)
+    return add_new_jar_plugin(
+        plugins_tree, zip_file.open(jar_plugin_path), zip_name.name
+    )
 
 
 def add_new_jar_plugin(
@@ -22,7 +28,7 @@ def add_new_jar_plugin(
 ) -> str:
     plugin_metadata = _get_plugin_metadata_from_jar(jar_fileobject)
     plugin_version = plugin_metadata.find("version").text
-    plugin_file_name = f"{plugin_version}-{plugin_file_name}"
+    plugin_file_name = f"{plugin_version}-{plugin_file_name}"  # Refactor this shit
     new_plugin_xml = _generate_plugin_xml_from_metadata(
         plugin_metadata, plugin_file_name, plugin_version
     )
@@ -60,4 +66,4 @@ def _generate_plugin_xml_from_metadata(
 def _dump_new_plugin(plugins_tree: ElementTree, new_plugin_xml: ElementTree) -> None:
     # noinspection PyUnresolvedReferences
     plugins_tree.getroot().append(new_plugin_xml)
-    plugins_tree.write("/updatePlugins.xml", pretty_print=True)
+    plugins_tree.write(str(settings.plugins_xml), pretty_print=True)

@@ -12,5 +12,5 @@ lint:
 	poetry run mypy server
 
 format:
-	poetry run black server
-	poetry run isort server
+	poetry run isort --py 39 server
+	poetry run black --target-version py39 server
