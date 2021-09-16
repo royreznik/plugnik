@@ -9,22 +9,25 @@ xml_parser = etree.XMLParser(remove_blank_text=True)
 
 
 def add_new_zip_plugin(
-    plugins_tree: ElementTree, zip_fileobject: IO, zip_name: Path, plugin_file_name: str
-) -> None:
+    plugins_tree: ElementTree, zip_fileobject: IO, zip_name: Path
+) -> str:
     zip_file = zipfile.ZipFile(zip_fileobject)
     jar_plugin_name = zip_name.with_suffix(".jar").name
     jar_plugin_path = [i for i in zip_file.namelist() if jar_plugin_name in i][0]
-    add_new_jar_plugin(plugins_tree, zip_file.open(jar_plugin_path), plugin_file_name)
+    return add_new_jar_plugin(plugins_tree, zip_file.open(jar_plugin_path), zip_name.name)
 
 
 def add_new_jar_plugin(
     plugins_tree: ElementTree, jar_fileobject: IO, plugin_file_name: str
-) -> None:
+) -> str:
     plugin_metadata = _get_plugin_metadata_from_jar(jar_fileobject)
+    plugin_version = plugin_metadata.find("version").text
+    plugin_file_name = f"{plugin_version}-{plugin_file_name}"
     new_plugin_xml = _generate_plugin_xml_from_metadata(
-        plugin_metadata, plugin_file_name
+        plugin_metadata, plugin_file_name, plugin_version
     )
     _dump_new_plugin(plugins_tree, new_plugin_xml)
+    return plugin_file_name
 
 
 def _get_plugin_metadata_from_jar(jar_fileobject: IO) -> ElementTree:
@@ -38,15 +41,15 @@ def _get_plugin_metadata_from_jar(jar_fileobject: IO) -> ElementTree:
 
 
 def _generate_plugin_xml_from_metadata(
-    plugin_metadata: ElementTree, plugin_file_name: str
+    plugin_metadata: ElementTree, plugin_file_name: str, plugin_version: str
 ) -> ElementTree:
     # noinspection PyUnresolvedReferences
     new_plugin_xml = etree.Element(
         "plugin",
         attrib={
             "id": plugin_metadata.find("id").text,
-            "url": "/get_plugin/" + plugin_file_name,  # TODO: Make this better
-            "version": plugin_metadata.find("version").text,
+            "url": f"/get_plugin/",  # TODO: Make this better
+            "version": plugin_version,
         },
     )
     new_plugin_xml.append(plugin_metadata.find("idea-version"))
