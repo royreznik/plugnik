@@ -9,5 +9,5 @@ class PluginManagerSettings(BaseSettings):
     plugins_folder: Path = Path("/tmp/plugins/")
 
 
-with open("/app/settings.json") as f:
+with open("/app/settings/plugin_manager.json") as f:
     plugin_manager_settings = PluginManagerSettings(**json.load(f))

@@ -10,4 +10,4 @@ services:
     volumes:
       - ./updatePlugins.xml:/updatePlugins.xml
       - /tmp/plugins/:/tmp/plugins # Should be pointing to storage machine
-      - ./settings/plugin_manager_settings.prod.json:/app/settings.json
+      - ./settings/plugin_manager.prod.json:/app/settings/plugin_manager.json
