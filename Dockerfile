@@ -32,6 +32,8 @@ FROM python-base as production
 COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 COPY --from=builder-base $POETRY_HOME $POETRY_HOME
 RUN mkdir /tmp/plugins/
+RUN echo "<plugins></plugins>" > /updatePlugins.xml
+
 COPY server/ /app/server/
 
 WORKDIR /app/
