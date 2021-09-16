@@ -782,7 +782,7 @@ six = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "dceb00c58bbf44c868b7e9791d71ac94b3da2ce03086162dd94a388d6071c861"
+content-hash = "183dea830ac0928027ddfe68a6f4fcf70e8ac5ad1f92eea626da1e7b89e10c66"
 
 [metadata.files]
 aiofiles = [
