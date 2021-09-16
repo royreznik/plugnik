@@ -1,4 +1,5 @@
 import io
+from http import HTTPStatus
 from pathlib import Path
 from typing import Any
 from zipfile import BadZipfile
@@ -12,8 +13,8 @@ from lxml.etree import _ElementTree as ElementTree
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
+from .plugin_manager import add_new_jar_plugin, add_new_zip_plugin, xml_parser, remove_plugin_xml, remove_plugin_file
 from .settings import settings
-from .plugin_manager import add_new_jar_plugin, add_new_zip_plugin, xml_parser
 
 app = FastAPI()
 plugins_tree: ElementTree = etree.parse(str(settings.plugins_xml), xml_parser)
@@ -34,6 +35,7 @@ async def get_plugin(name: str):
 
 
 # TODO: add ability to delete plugin
+# TODO: don't allow multiply copy of the same plugin
 @app.post("/upload_jar", status_code=201)
 async def upload(plugin: UploadFile = File(...)):
     filename = Path(plugin.filename)
@@ -59,6 +61,12 @@ async def upload_zip(plugin: UploadFile = File(...)):
     zip_fileobject = io.BytesIO(zip_data)
     plugin_file_name = add_new_zip_plugin(plugins_tree, zip_fileobject, filename)
     (settings.plugins_folder / plugin_file_name).write_bytes(zip_data)
+
+
+@app.delete("/", status_code=204, response_class=Response)
+async def delete_plugin(plugin: str, version: str):
+    plugin = remove_plugin_xml(plugins_tree, plugin, version)
+    remove_plugin_file(settings.plugins_folder, plugin)
 
 
 # noinspection PyUnusedLocal

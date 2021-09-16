@@ -5,11 +5,30 @@ from typing import IO
 from lxml import etree
 
 # noinspection PyProtectedMember
-from lxml.etree import _ElementTree as ElementTree
+from lxml.etree import _ElementTree as ElementTree, _Element as Element
 
 from .settings import settings
 
 xml_parser = etree.XMLParser(remove_blank_text=True)
+
+
+def remove_plugin_xml(plugins_tree: ElementTree, plugin_name: str, version: str) -> Element:
+    print(plugin_name, version)
+    plugin_search_query = f".//plugin[@version=\"{version}\"]//name[text()=\"{plugin_name}\"]"
+    plugin_search_result = plugins_tree.getroot().xpath(plugin_search_query)
+
+    if not plugin_search_result:
+        raise ValueError(f"Plugin not found. name: {plugin_name}, version: {version}")
+    plugin = plugin_search_result[0].getparent()
+    plugins_tree.getroot().remove(plugin)
+    plugins_tree.write(str(settings.plugins_xml), pretty_print=True)
+    return plugin
+
+
+def remove_plugin_file(plugin_folder:Path, plugin: Element) -> None:
+    plugin_url = plugin.attrib["url"]
+    plugin_file_name = Path(plugin_url).name
+    (plugin_folder / plugin_file_name).unlink(missing_ok=True)
 
 
 def add_new_zip_plugin(
