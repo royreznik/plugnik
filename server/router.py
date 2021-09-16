@@ -13,7 +13,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 from .settings import settings
-from .utils import add_new_jar_plugin, add_new_zip_plugin, xml_parser
+from .plugin_manager import add_new_jar_plugin, add_new_zip_plugin, xml_parser
 
 app = FastAPI()
 plugins_tree: ElementTree = etree.parse(str(settings.plugins_xml), xml_parser)
