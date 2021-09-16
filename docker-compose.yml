@@ -1,0 +1,11 @@
+services:
+  server:
+    image: jetbrain-plugin-repository
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: plugins
+    ports:
+      - "80:80"
+    volumes:
+      - ./updatePlugins.xml:/updatePlugins.xml

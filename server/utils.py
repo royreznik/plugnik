@@ -57,4 +57,4 @@ def _generate_plugin_xml_from_metadata(
 def _dump_new_plugin(plugins_tree: ElementTree, new_plugin_xml: ElementTree) -> None:
     # noinspection PyUnresolvedReferences
     plugins_tree.getroot().append(new_plugin_xml)
-    plugins_tree.write("updatePlugins.xml", pretty_print=True)
+    plugins_tree.write("/updatePlugins.xml", pretty_print=True)

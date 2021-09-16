@@ -1,9 +1,8 @@
 run: build
-	docker run -p 80:80 --rm jetbrains-server
+	docker-compose up
 
 build:
-	docker build -f Dockerfile . --tag jetbrains-server
-
+	docker-compose build
 
 lint:
 	poetry run flake8 server
