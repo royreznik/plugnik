@@ -22,7 +22,6 @@ from .plugin_manager import (
 )
 from .utils import validate_extension
 
-# TODO: change numbers to httpstatus
 app = FastAPI()
 
 
@@ -38,7 +37,6 @@ async def get_plugin(name: str):
     return FileResponse(get_plugin_file_path(name))
 
 
-# TODO: don't allow multiply copy of the same plugin
 @app.post("/upload_jar", status_code=HTTPStatus.CREATED)
 async def upload_jar(plugin_file: UploadFile = File(...)):
     filename = Path(plugin_file.filename)
