@@ -5,16 +5,21 @@ from typing import IO
 from lxml import etree
 
 # noinspection PyProtectedMember
-from lxml.etree import _ElementTree as ElementTree, _Element as Element
+from lxml.etree import _Element as Element
+from lxml.etree import _ElementTree as ElementTree
 
+# TODO: Maybe remove the settings from here and just pass the settings?
 from .settings import settings
 
 xml_parser = etree.XMLParser(remove_blank_text=True)
 
 
-def remove_plugin_xml(plugins_tree: ElementTree, plugin_name: str, version: str) -> Element:
-    print(plugin_name, version)
-    plugin_search_query = f".//plugin[@version=\"{version}\"]//name[text()=\"{plugin_name}\"]"
+def remove_plugin_xml(
+    plugins_tree: ElementTree, plugin_name: str, version: str
+) -> Element:
+    plugin_search_query = (
+        f'.//plugin[@version="{version}"]//name[text()="{plugin_name}"]'
+    )
     plugin_search_result = plugins_tree.getroot().xpath(plugin_search_query)
 
     if not plugin_search_result:
@@ -25,20 +30,24 @@ def remove_plugin_xml(plugins_tree: ElementTree, plugin_name: str, version: str)
     return plugin
 
 
-def remove_plugin_file(plugin_folder:Path, plugin: Element) -> None:
+def remove_plugin_file(plugin_folder: Path, plugin: Element) -> None:
     plugin_url = plugin.attrib["url"]
     plugin_file_name = Path(plugin_url).name
     (plugin_folder / plugin_file_name).unlink(missing_ok=True)
 
 
+def save_plugin_file(plugin_file_name: str, plugin_data: bytes):
+    (settings.plugins_folder / plugin_file_name).write_bytes(plugin_data)
+
+
 def add_new_zip_plugin(
     plugins_tree: ElementTree, zip_fileobject: IO, zip_name: Path
 ) -> str:
-    zip_file = zipfile.ZipFile(zip_fileobject)
-    jar_plugin_name = zip_name.with_suffix(".jar").name
-    jar_plugin_path = [i for i in zip_file.namelist() if jar_plugin_name in i][0]
+    plugin_archive = zipfile.ZipFile(zip_fileobject)
+    inner_jar_name = zip_name.with_suffix(".jar").name
+    inner_jar_path = [i for i in plugin_archive.namelist() if inner_jar_name in i][0]
     return add_new_jar_plugin(
-        plugins_tree, zip_file.open(jar_plugin_path), zip_name.name
+        plugins_tree, plugin_archive.open(inner_jar_path), zip_name.name
     )
 
 
@@ -51,7 +60,7 @@ def add_new_jar_plugin(
     new_plugin_xml = _generate_plugin_xml_from_metadata(
         plugin_metadata, plugin_file_name, plugin_version
     )
-    _dump_new_plugin(plugins_tree, new_plugin_xml)
+    _dump_new_plugin_xml(plugins_tree, new_plugin_xml)
     return plugin_file_name
 
 
@@ -82,7 +91,9 @@ def _generate_plugin_xml_from_metadata(
     return new_plugin_xml
 
 
-def _dump_new_plugin(plugins_tree: ElementTree, new_plugin_xml: ElementTree) -> None:
+def _dump_new_plugin_xml(
+    plugins_tree: ElementTree, new_plugin_xml: ElementTree
+) -> None:
     # noinspection PyUnresolvedReferences
     plugins_tree.getroot().append(new_plugin_xml)
     plugins_tree.write(str(settings.plugins_xml), pretty_print=True)
