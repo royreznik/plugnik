@@ -1,10 +1,14 @@
 import io
 from pathlib import Path
+from typing import Any
+from zipfile import BadZipfile
 
 from fastapi import FastAPI, File, HTTPException, Response, UploadFile
 from fastapi.responses import FileResponse
 from lxml import etree
 from lxml.etree import _ElementTree as ElementTree
+from starlette.requests import Request
+from starlette.responses import JSONResponse
 
 from .utils import add_new_jar_plugin, add_new_zip_plugin, xml_parser
 
@@ -27,7 +31,6 @@ async def get_plugin(name: str):
     return FileResponse(plugins_folder / name)
 
 
-# TODO: add handler for value error
 # TODO: delete plugin if fail
 # TODO: add ability to delete plugin
 # TODO: check for coalition
@@ -56,3 +59,13 @@ async def upload_zip(plugin: UploadFile = File(...)):
     zip_fileobject = io.BytesIO(zip_data)
     add_new_zip_plugin(plugins_tree, zip_fileobject, filename, filename.name)
     (plugins_folder / filename.name).write_bytes(zip_data)
+
+
+@app.exception_handler(BadZipfile)
+@app.exception_handler(ValueError)
+async def value_exception_handler(request: Request, exc: Any):
+    return JSONResponse(
+        status_code=400,
+        content={"exception": str(exc)},
+    )
+
