@@ -48,7 +48,7 @@ def _generate_plugin_xml_from_metadata(
         "plugin",
         attrib={
             "id": plugin_metadata.find("id").text,
-            "url": f"/get_plugin/",  # TODO: Make this better
+            "url": f"/get_plugin/{plugin_file_name}",  # TODO: Make this better
             "version": plugin_version,
         },
     )
