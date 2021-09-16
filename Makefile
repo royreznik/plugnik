@@ -1,11 +1,14 @@
 run: build
-	docker-compose up
-
-run-dev: build
-	docker-compose -f docker-compose.dev.yml up
+	docker-compose -f docker-compose.prod.yml up
 
 build:
-	docker-compose build
+	docker-compose -f docker-compose.prod.yml build
+
+run-dev: build-dev
+	docker-compose -f docker-compose.dev.yml up
+
+build-dev:
+	docker-compose -f docker-compose.dev.yml build
 
 lint:
 	poetry run flake8 server
