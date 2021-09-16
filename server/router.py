@@ -19,6 +19,7 @@ plugins_tree: ElementTree = etree.parse("/updatePlugins.xml", xml_parser)
 plugins_folder = Path("/tmp/plugins/")
 
 
+# TODO: Can optimize the response size if we look at the build number and filter
 @app.get("/")
 async def all_plugins(build: str) -> Response:
     return Response(
@@ -31,9 +32,7 @@ async def get_plugin(name: str):
     return FileResponse(plugins_folder / name)
 
 
-# TODO: delete plugin if fail
 # TODO: add ability to delete plugin
-# TODO: check for coalition
 @app.post("/upload_jar", status_code=201)
 async def upload(plugin: UploadFile = File(...)):
     filename = Path(plugin.filename)
@@ -43,8 +42,8 @@ async def upload(plugin: UploadFile = File(...)):
     if isinstance(jar_data, str):
         jar_data = jar_data.encode()
     jar_fileobject = io.BytesIO(jar_data)
-    add_new_jar_plugin(plugins_tree, jar_fileobject, filename.name)
-    (plugins_folder / filename.name).write_bytes(jar_data)
+    plugin_file_name = add_new_jar_plugin(plugins_tree, jar_fileobject, filename.name)
+    (plugins_folder / plugin_file_name).write_bytes(jar_data)
 
 
 @app.post("/upload_zip", status_code=201)
@@ -57,8 +56,8 @@ async def upload_zip(plugin: UploadFile = File(...)):
     if isinstance(zip_data, str):
         zip_data = zip_data.encode()
     zip_fileobject = io.BytesIO(zip_data)
-    add_new_zip_plugin(plugins_tree, zip_fileobject, filename, filename.name)
-    (plugins_folder / filename.name).write_bytes(zip_data)
+    plugin_file_name = add_new_zip_plugin(plugins_tree, zip_fileobject, filename)
+    (plugins_folder / plugin_file_name).write_bytes(zip_data)
 
 
 @app.exception_handler(BadZipfile)

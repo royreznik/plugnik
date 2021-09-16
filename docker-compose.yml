@@ -9,3 +9,4 @@ services:
       - "80:80"
     volumes:
       - ./updatePlugins.xml:/updatePlugins.xml
+      - /tmp/plugins/:/tmp/plugins # Should be pointing to storage machine
