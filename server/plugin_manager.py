@@ -62,6 +62,7 @@ def add_new_jar_plugin(jar_fileobject: IO, plugin_file_name: str) -> str:
     new_plugin_xml = _generate_plugin_xml_from_metadata(
         plugin_metadata, plugin_file_name, plugin_version
     )
+    _validate_plugin_not_exists(new_plugin_xml)
     _dump_new_plugin_xml(new_plugin_xml)
     return plugin_file_name
 
@@ -97,3 +98,8 @@ def _dump_new_plugin_xml(new_plugin_xml: ElementTree) -> None:
     # noinspection PyUnresolvedReferences
     plugins_tree.getroot().append(new_plugin_xml)
     plugins_tree.write(str(plugin_manager_settings.plugins_xml), pretty_print=True)
+
+
+def _validate_plugin_not_exists(new_plugin_xml: ElementTree):
+    if etree.tostring(new_plugin_xml) in etree.tostring(plugins_tree):
+        raise ValueError("This plugin already exists!")
