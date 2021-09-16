@@ -11,7 +11,7 @@ from .utils import add_new_jar_plugin, add_new_zip_plugin, xml_parser
 app = FastAPI()
 # TODO: Extract to config
 # TODO: create the file if not exists
-plugins_tree: ElementTree = etree.parse("updatePlugins.xml", xml_parser)
+plugins_tree: ElementTree = etree.parse("/updatePlugins.xml", xml_parser)
 plugins_folder = Path("/tmp/plugins/")
 
 
@@ -30,6 +30,7 @@ async def get_plugin(name: str):
 # TODO: add handler for value error
 # TODO: delete plugin if fail
 # TODO: add ability to delete plugin
+# TODO: check for coalition
 @app.post("/upload_jar", status_code=201)
 async def upload(plugin: UploadFile = File(...)):
     filename = Path(plugin.filename)

@@ -5,7 +5,7 @@ PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
     PIP_DEFAULT_TIMEOUT=100 \
-    POETRY_VERSION=1.0.5 \
+    POETRY_VERSION=1.1.7 \
     POETRY_HOME="/opt/poetry" \
     POETRY_VIRTUALENVS_IN_PROJECT=true \
     POETRY_NO_INTERACTION=1 \
@@ -33,7 +33,6 @@ COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 COPY --from=builder-base $POETRY_HOME $POETRY_HOME
 RUN mkdir /tmp/plugins/
 COPY server/ /app/server/
-COPY updatePlugins.xml /app/
 
 WORKDIR /app/
 
