@@ -9,6 +9,6 @@ services:
       - "80:80"
     volumes:
       - ./updatePlugins.xml:/updatePlugins.xml
-      - ./server:/app/server/
+      - ./server:/app/server/  # Mounting the server, so it will still reload inside the container
       - ./settings/settings.dev.json:/app/settings.json
     command: uvicorn server:app --reload --host 0.0.0.0 --port 80
