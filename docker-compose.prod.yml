@@ -1,7 +1,7 @@
 services:
   server:
-    image: jetbrain-plugin-repository
-    container_name: plugins
+    image: plugnik
+    container_name: plugnik
     ports:
       - "80:80"
     volumes:
