@@ -3,11 +3,8 @@ from pathlib import Path
 from typing import IO
 
 from lxml import etree
-
-# noinspection PyProtectedMember
-# noinspection PyProtectedMember
-from lxml.etree import _Element as Element
-from lxml.etree import _ElementTree as ElementTree
+from lxml.etree import _Element as Element  # noqa
+from lxml.etree import _ElementTree as ElementTree  # noqa
 
 from .settings import plugin_manager_settings
 
