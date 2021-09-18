@@ -19,4 +19,4 @@ format:
 	poetry run isort --py 39 server tests
 
 test:
-	pushd tests && poetry run pytest . && popd
+	cd tests && poetry run pytest . && cd ..
