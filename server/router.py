@@ -65,6 +65,12 @@ async def delete_plugin(plugin: str, version: str):
     remove_plugin_file(plugin)
 
 
+# noinspection SpellCheckingInspection
+@app.get("/ruok", status_code=HTTPStatus.OK, response_class=Response)
+def ruok() -> str:
+    return "imok"
+
+
 # noinspection PyUnusedLocal
 @app.exception_handler(BadZipfile)
 @app.exception_handler(ValueError)
