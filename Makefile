@@ -11,9 +11,9 @@ build-dev:
 	docker-compose -f docker-compose.dev.yml build
 
 lint:
-	poetry run flake8 server
-	poetry run mypy server
+	poetry run flake8 server tests
+	poetry run mypy server tests
 
 format:
-	poetry run black --target-version py39 server
-	poetry run isort --py 39 server
+	poetry run black --target-version py39 server tests
+	poetry run isort --py 39 server tests
