@@ -1,0 +1,11 @@
+services:
+  server:
+    image: jetbrain-plugin-repository-tests
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    container_name: plugins-tests
+    ports:
+      - "80:80"
+    volumes:
+      - ./plugin_manager.test.json:/app/settings/plugin_manager.json
