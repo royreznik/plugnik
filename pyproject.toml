@@ -13,6 +13,7 @@ aiofiles = "^0.7.0"
 python-multipart = "^0.0.5"
 docker-compose = "^1.29.2"
 pydantic = "^1.8.2"
+coverage = "^5.5"
 
 [tool.poetry.dev-dependencies]
 ipython = "^7.27.0"
