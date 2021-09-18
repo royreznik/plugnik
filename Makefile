@@ -2,7 +2,7 @@ run: build
 	docker-compose -f docker-compose.prod.yml up
 
 build:
-	docker-compose -f docker-compose.prod.yml build
+	docker build -f Dockerfile . -t plugnik
 
 run-dev: build-dev
 	docker-compose -f docker-compose.dev.yml up

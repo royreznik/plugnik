@@ -33,6 +33,8 @@ COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 COPY --from=builder-base $POETRY_HOME $POETRY_HOME
 RUN mkdir /tmp/plugins/
 RUN echo "<plugins></plugins>" > /updatePlugins.xml
+RUN mkdir -p /app/settings/
+RUN echo "{}" > /app/settings/plugin_manager.json
 
 COPY server/ /app/server/
 
