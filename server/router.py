@@ -83,7 +83,7 @@ async def value_exception_handler(request: Request, exc: Any):
 
 # noinspection PyUnusedLocal
 @app.exception_handler(KeyError)
-async def value_exception_handler(request: Request, exc: Any):
+async def key_exception_handler(request: Request, exc: Any):
     return JSONResponse(
         status_code=HTTPStatus.NOT_FOUND,
         content={"exception": str(exc)},

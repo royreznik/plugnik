@@ -5,6 +5,7 @@ from typing import IO
 from lxml import etree
 
 # noinspection PyProtectedMember
+# noinspection PyProtectedMember
 from lxml.etree import _Element as Element
 from lxml.etree import _ElementTree as ElementTree
 
@@ -67,7 +68,7 @@ def add_new_jar_plugin(jar_fileobject: IO, plugin_file_name: str) -> str:
     return plugin_file_name
 
 
-def _get_plugin_metadata_from_jar(jar_fileobject: IO) -> ElementTree:
+def _get_plugin_metadata_from_jar(jar_fileobject: IO) -> Element:
     jar = zipfile.ZipFile(jar_fileobject, "r")
 
     if "META-INF/plugin.xml" not in jar.namelist():
@@ -78,8 +79,8 @@ def _get_plugin_metadata_from_jar(jar_fileobject: IO) -> ElementTree:
 
 
 def _generate_plugin_xml_from_metadata(
-    plugin_metadata: ElementTree, plugin_file_name: str, plugin_version: str
-) -> ElementTree:
+    plugin_metadata: Element, plugin_file_name: str, plugin_version: str
+) -> Element:
     # noinspection PyUnresolvedReferences
     new_plugin_xml = etree.Element(
         "plugin",
@@ -94,12 +95,12 @@ def _generate_plugin_xml_from_metadata(
     return new_plugin_xml
 
 
-def _dump_new_plugin_xml(new_plugin_xml: ElementTree) -> None:
+def _dump_new_plugin_xml(new_plugin_xml: Element) -> None:
     # noinspection PyUnresolvedReferences
     plugins_tree.getroot().append(new_plugin_xml)
     plugins_tree.write(str(plugin_manager_settings.plugins_xml), pretty_print=True)
 
 
-def _validate_plugin_not_exists(new_plugin_xml: ElementTree):
+def _validate_plugin_not_exists(new_plugin_xml: Element):
     if etree.tostring(new_plugin_xml) in etree.tostring(plugins_tree):
         raise ValueError("This plugin already exists!")

@@ -22,8 +22,9 @@ def test_upload_get_delete(
 
     assert upload_response.status_code == HTTPStatus.CREATED
 
+    # noinspection SpellCheckingInspection
     expected_plugin_xml = (
-        f'<plugin id="rez.nik" url="/get_plugin/13.37-plugin.{extension}" version="13.37">'
+        f'<plugin id="rez.nik" url="/get_plugin/1-plugin.{extension}" version="1">'
         f'<idea-version since-build="192"/>'
         f"<name>Reznik</name>"
         f"</plugin>"
@@ -33,11 +34,12 @@ def test_upload_get_delete(
     assert expected_plugin_xml in plugins_xml
 
     plugin_from_server = requests.get(
-        f"{server_url}/get_plugin/13.37-plugin.{extension}"
+        f"{server_url}/get_plugin/1-plugin.{extension}"
     ).content
     assert plugin_from_server == plugin_data
 
-    delete_response = requests.delete(f"{server_url}/?plugin=Reznik&version=13.37")
+    # noinspection SpellCheckingInspection
+    delete_response = requests.delete(f"{server_url}/?plugin=Reznik&version=1")
     assert delete_response.status_code == HTTPStatus.NO_CONTENT
 
     plugins_xml = requests.get("http://localhost:80/?build=").text
@@ -46,7 +48,7 @@ def test_upload_get_delete(
 
 def test_delete_plugin_that_does_not_exist(server_url: str) -> None:
     # noinspection SpellCheckingInspection
-    delete_response = requests.delete(f"{server_url}/?plugin=Kuku&version=13.37")
+    delete_response = requests.delete(f"{server_url}/?plugin=Kuku&version=1")
     assert delete_response.status_code == HTTPStatus.NOT_FOUND, delete_response.text
 
 
@@ -58,7 +60,7 @@ def test_upload_file_with_different_extension(
         f"{server_url}/upload_{extension}",
         resources_folder,
         f"plugin.{extension}",
-        f"plugin.exe",
+        "plugin.exe",
     )
     assert upload_response.status_code == HTTPStatus.BAD_REQUEST, upload_response.text
 

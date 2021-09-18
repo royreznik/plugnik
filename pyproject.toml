@@ -24,6 +24,8 @@ isort = "^5.9.3"
 mypy = "^0.910"
 pytest = "^6.2.5"
 pytest-docker = "^0.10.3"
+requests = "^2.26.0"
+types-requests = "^2.25.6"
 
 [tool.isort]
 profile = "black"
