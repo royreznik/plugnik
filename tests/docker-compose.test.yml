@@ -1,0 +1,11 @@
+services:
+  server:
+    image: plugnik
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    container_name: plugnik-tests
+    ports:
+      - "80:80"
+    volumes:
+      - ./plugin_manager.test.json:/app/settings/plugin_manager.json
