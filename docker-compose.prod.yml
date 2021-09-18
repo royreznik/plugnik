@@ -5,6 +5,6 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./updatePlugins.xml:/updatePlugins.xml
+      - ./server/updatePlugins.xml:/updatePlugins.xml
       - /tmp/plugins/:/tmp/plugins # Should be pointing to storage machine
       - ./settings/plugin_manager.prod.json:/app/settings/plugin_manager.json

@@ -17,3 +17,6 @@ lint:
 format:
 	poetry run black --target-version py39 server tests
 	poetry run isort --py 39 server tests
+
+test:
+	pushd tests && poetry run pytest . && popd
