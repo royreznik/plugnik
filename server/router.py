@@ -73,3 +73,12 @@ async def value_exception_handler(request: Request, exc: Any):
         status_code=HTTPStatus.BAD_REQUEST,
         content={"exception": str(exc)},
     )
+
+
+# noinspection PyUnusedLocal
+@app.exception_handler(KeyError)
+async def value_exception_handler(request: Request, exc: Any):
+    return JSONResponse(
+        status_code=HTTPStatus.NOT_FOUND,
+        content={"exception": str(exc)},
+    )

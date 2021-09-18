@@ -23,7 +23,7 @@ def remove_plugin_xml(plugin_name: str, version: str) -> Element:
     plugin_search_result = plugins_tree.getroot().xpath(plugin_search_query)
 
     if not plugin_search_result:
-        raise ValueError(f"Plugin not found. name: {plugin_name}, version: {version}")
+        raise KeyError(f"Plugin not found. name: {plugin_name}, version: {version}")
     plugin = plugin_search_result[0].getparent()
     plugins_tree.getroot().remove(plugin)
     plugins_tree.write(str(plugin_manager_settings.plugins_xml), pretty_print=True)
