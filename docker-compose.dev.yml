@@ -1,10 +1,10 @@
 services:
   server:
-    image: jetbrain-plugin-repository
+    image: plugnik
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: plugins
+    container_name: plugnik
     ports:
       - "80:80"
     volumes:
