@@ -102,12 +102,12 @@ def test_upload_two_plugins_once(server_url: str, resources_folder: Path):
     expected_plugin_xml = (
         '<plugin id="rez.nik" url="/get_plugin/1-plugin.jar" version="1">'
         '<idea-version since-build="192"/>'
-        '<name>Reznik</name>'
-        '</plugin>'
+        "<name>Reznik</name>"
+        "</plugin>"
         '<plugin id="rez.nik" url="/get_plugin/1-plugin.zip" version="1">'
         '<idea-version since-build="192"/>'
-        '<name>Reznik</name>'
-        '</plugin>'
+        "<name>Reznik</name>"
+        "</plugin>"
     )
 
     assert expected_plugin_xml in plugins_xml
