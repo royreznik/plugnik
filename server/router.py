@@ -4,10 +4,9 @@ from pathlib import Path
 from typing import Any, List
 from zipfile import BadZipfile
 
-from fastapi import FastAPI, File, Response, UploadFile, Request
+from fastapi import FastAPI, File, Request, Response, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
-
 
 from .plugin_manager import (
     add_new_jar_plugin,
@@ -61,8 +60,9 @@ async def redirect_upload() -> RedirectResponse:
 
 
 @app.get("/favicon.ico")
-async def redirect_upload() -> RedirectResponse:
+async def redirect_favicon() -> RedirectResponse:
     return RedirectResponse("/static/favicon.ico")
+
 
 @app.delete("/", status_code=HTTPStatus.NO_CONTENT, response_class=Response)
 async def delete_plugin(plugin: str, version: str):
