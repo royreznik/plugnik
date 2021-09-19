@@ -5,7 +5,7 @@ from typing import Any, List
 from zipfile import BadZipfile
 
 from fastapi import FastAPI, File, Response, UploadFile, Request
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 
@@ -53,6 +53,11 @@ async def upload(plugin_files: List[UploadFile] = File(...)):
             else add_new_jar_plugin(plugin_fileobject, file_name.name)
         )
         save_plugin_file(plugin_file_name, plugin_data)
+
+
+@app.get("/upload")
+async def redirect_upload() -> RedirectResponse:
+    return RedirectResponse("/static/upload.html")
 
 
 @app.delete("/", status_code=HTTPStatus.NO_CONTENT, response_class=Response)
