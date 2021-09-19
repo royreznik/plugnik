@@ -4,12 +4,10 @@ from pathlib import Path
 from typing import Any, List
 from zipfile import BadZipfile
 
-from fastapi import FastAPI, File, Response, UploadFile
-from fastapi.responses import FileResponse
+from fastapi import FastAPI, File, Response, UploadFile, Request
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 
-# noinspection PyProtectedMember
-from starlette.requests import Request
-from starlette.responses import JSONResponse
 
 from .plugin_manager import (
     add_new_jar_plugin,
@@ -23,6 +21,8 @@ from .plugin_manager import (
 from .utils import validate_allowed_extensions
 
 app = FastAPI()
+
+app.mount("/static", StaticFiles(directory="server/static"), name="static")
 
 
 # TODO: Can optimize the response size if we look at the build number and filter

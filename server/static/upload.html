@@ -1,0 +1,42 @@
+<script src="./jquery-1.11.1.min.js"></script>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link href="./uploadfile.css" rel="stylesheet">
+<script src="./jquery.uploadfile.min.js"></script>
+</head>
+<body>
+
+<div id="mulitplefileuploader">Upload</div>
+
+<div id="status"></div>
+
+<script>
+
+$(document).ready(function()
+{
+
+var settings = {
+	url: "/upload",
+	method: "POST",
+	allowedTypes:"jar,zip",
+	multiple: true,
+    fileName: "plugin_files",
+	dragdropWidth:800,
+	onSuccess:function(files,data,xhr)
+	{
+		$("#status").html("<font color='green'>Upload is success</font>");
+
+	},
+	onError: function(files,status,errMsg)
+	{
+		$("#status").html("<font color='red'>Upload is Failed</font>");
+	}
+}
+$("#mulitplefileuploader").uploadFile(settings);
+
+});
+</script>
+</body>
