@@ -3,4 +3,8 @@
     <idea-version since-build="212.4746.13" until-build="*.*"/>
     <name>Reznik</name>
   </plugin>
+  <plugin id="com.koxudaxi.poetry" url="/get_plugin/1.1.5-212-NyanProgressBar.jar" version="1.1.5-212">
+    <idea-version since-build="212.4746.13" until-build="212.*"/>
+    <name>Poetry</name>
+  </plugin>
 </plugins>

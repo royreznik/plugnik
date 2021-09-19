@@ -1,7 +1,7 @@
 import io
 from http import HTTPStatus
 from pathlib import Path
-from typing import Any
+from typing import Any, List
 from zipfile import BadZipfile
 
 from fastapi import FastAPI, File, Response, UploadFile
@@ -38,20 +38,21 @@ async def get_plugin(name: str):
 
 
 @app.post("/upload", status_code=HTTPStatus.CREATED)
-async def upload(plugin_file: UploadFile = File(...)):
-    file_name = Path(plugin_file.filename)
-    validate_allowed_extensions(file_name)
-    plugin_data = await plugin_file.read()
-    plugin_data = (
-        plugin_data if isinstance(plugin_data, bytes) else plugin_data.encode()
-    )
-    plugin_fileobject = io.BytesIO(plugin_data)
-    plugin_file_name = (
-        add_new_zip_plugin(plugin_fileobject, file_name)
-        if file_name.suffix == ".zip"
-        else add_new_jar_plugin(plugin_fileobject, file_name.name)
-    )
-    save_plugin_file(plugin_file_name, plugin_data)
+async def upload(plugin_files: List[UploadFile] = File(...)):
+    for plugin_file in plugin_files:
+        file_name = Path(plugin_file.filename)
+        validate_allowed_extensions(file_name)
+        plugin_data = await plugin_file.read()
+        plugin_data = (
+            plugin_data if isinstance(plugin_data, bytes) else plugin_data.encode()
+        )
+        plugin_fileobject = io.BytesIO(plugin_data)
+        plugin_file_name = (
+            add_new_zip_plugin(plugin_fileobject, file_name)
+            if file_name.suffix == ".zip"
+            else add_new_jar_plugin(plugin_fileobject, file_name.name)
+        )
+        save_plugin_file(plugin_file_name, plugin_data)
 
 
 @app.delete("/", status_code=HTTPStatus.NO_CONTENT, response_class=Response)
