@@ -17,7 +17,7 @@ def test_upload_get_delete(
     assert plugins_xml == "<plugins/>"
 
     upload_response, plugin_data = upload_resource_plugin(
-        f"{server_url}/upload_{extension}", resources_folder, f"plugin.{extension}"
+        server_url, resources_folder, f"plugin.{extension}"
     )
 
     assert upload_response.status_code == HTTPStatus.CREATED
@@ -57,7 +57,7 @@ def test_upload_file_with_different_extension(
     server_url: str, resources_folder: Path, extension: str
 ):
     upload_response, _ = upload_resource_plugin(
-        f"{server_url}/upload_{extension}",
+        server_url,
         resources_folder,
         f"plugin.{extension}",
         "plugin.exe",
@@ -70,7 +70,7 @@ def test_upload_wrong_file_type(
     server_url: str, resources_folder: Path, extension: str
 ):
     upload_response, _ = upload_resource_plugin(
-        f"{server_url}/upload_{extension}",
+        server_url,
         resources_folder,
         f"fake_{extension}.{extension}",
     )
@@ -79,13 +79,42 @@ def test_upload_wrong_file_type(
 
 def test_upload_jar_that_is_not_a_plugin(server_url: str, resources_folder: Path):
     upload_response, _ = upload_resource_plugin(
-        f"{server_url}/upload_jar", resources_folder, "not_plugin.jar"
+        server_url, resources_folder, "not_plugin.jar"
     )
     assert upload_response.status_code == HTTPStatus.BAD_REQUEST, upload_response.text
 
 
+def test_upload_two_plugins_once(server_url: str, resources_folder: Path):
+    with open(resources_folder / "plugin.jar", "rb") as j, open(
+        resources_folder / "plugin.zip", "rb"
+    ) as z:
+        jar_data = j.read()
+        zip_data = z.read()
+        files = [
+            ("plugin_files", ("plugin.jar", io.BytesIO(jar_data))),
+            ("plugin_files", ("plugin.zip", io.BytesIO(zip_data))),
+        ]
+    upload_response = requests.post(f"{server_url}/upload", files=files)
+
+    assert upload_response.status_code == HTTPStatus.CREATED
+    plugins_xml = requests.get(f"{server_url}/?build=").text
+
+    expected_plugin_xml = (
+        '<plugin id="rez.nik" url="/get_plugin/1-plugin.jar" version="1">'
+        '<idea-version since-build="192"/>'
+        "<name>Reznik</name>"
+        "</plugin>"
+        '<plugin id="rez.nik" url="/get_plugin/1-plugin.zip" version="1">'
+        '<idea-version since-build="192"/>'
+        "<name>Reznik</name>"
+        "</plugin>"
+    )
+
+    assert expected_plugin_xml in plugins_xml
+
+
 def upload_resource_plugin(
-    server_upload_url: str,
+    server_url: str,
     resources_folder: Path,
     file_name: str,
     server_file_name: Optional[str] = None,
@@ -95,7 +124,9 @@ def upload_resource_plugin(
     with open(plugin_path, "rb") as f:
         plugin_data = f.read()
     upload_response = requests.post(
-        server_upload_url,
-        files={"plugin_file": (server_file_name, io.BytesIO(plugin_data))},
+        f"{server_url}/upload",
+        files=[
+            ("plugin_files", (server_file_name, io.BytesIO(plugin_data))),
+        ],
     )
     return upload_response, plugin_data

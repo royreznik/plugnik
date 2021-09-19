@@ -1,15 +1,12 @@
 import io
 from http import HTTPStatus
 from pathlib import Path
-from typing import Any
+from typing import Any, List
 from zipfile import BadZipfile
 
-from fastapi import FastAPI, File, Response, UploadFile
-from fastapi.responses import FileResponse
-
-# noinspection PyProtectedMember
-from starlette.requests import Request
-from starlette.responses import JSONResponse
+from fastapi import FastAPI, File, Request, Response, UploadFile
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 
 from .plugin_manager import (
     add_new_jar_plugin,
@@ -20,9 +17,11 @@ from .plugin_manager import (
     remove_plugin_xml,
     save_plugin_file,
 )
-from .utils import validate_extension
+from .utils import validate_allowed_extensions
 
 app = FastAPI()
+
+app.mount("/static", StaticFiles(directory="server/static"), name="static")
 
 
 # TODO: Can optimize the response size if we look at the build number and filter
@@ -37,26 +36,32 @@ async def get_plugin(name: str):
     return FileResponse(get_plugin_file_path(name))
 
 
-@app.post("/upload_jar", status_code=HTTPStatus.CREATED)
-async def upload_jar(plugin_file: UploadFile = File(...)):
-    filename = Path(plugin_file.filename)
-    validate_extension(filename, ".jar")
-    jar_data = await plugin_file.read()
-    jar_data = jar_data if isinstance(jar_data, bytes) else jar_data.encode()
-    jar_fileobject = io.BytesIO(jar_data)
-    plugin_file_name = add_new_jar_plugin(jar_fileobject, filename.name)
-    save_plugin_file(plugin_file_name, jar_data)
+@app.post("/upload", status_code=HTTPStatus.CREATED)
+async def upload(plugin_files: List[UploadFile] = File(...)):
+    for plugin_file in plugin_files:
+        file_name = Path(plugin_file.filename)
+        validate_allowed_extensions(file_name)
+        plugin_data = await plugin_file.read()
+        plugin_data = (
+            plugin_data if isinstance(plugin_data, bytes) else plugin_data.encode()
+        )
+        plugin_fileobject = io.BytesIO(plugin_data)
+        plugin_file_name = (
+            add_new_zip_plugin(plugin_fileobject, file_name)
+            if file_name.suffix == ".zip"
+            else add_new_jar_plugin(plugin_fileobject, file_name.name)
+        )
+        save_plugin_file(plugin_file_name, plugin_data)
 
 
-@app.post("/upload_zip", status_code=HTTPStatus.CREATED)
-async def upload_zip(plugin_file: UploadFile = File(...)):
-    file_name = Path(plugin_file.filename)
-    validate_extension(file_name, ".zip")
-    zip_data = await plugin_file.read()
-    zip_data = zip_data if isinstance(zip_data, bytes) else zip_data.encode()
-    zip_fileobject = io.BytesIO(zip_data)
-    plugin_file_name = add_new_zip_plugin(zip_fileobject, file_name)
-    save_plugin_file(plugin_file_name, zip_data)
+@app.get("/upload")
+async def redirect_upload() -> RedirectResponse:
+    return RedirectResponse("/static/upload.html")
+
+
+@app.get("/favicon.ico")
+async def redirect_favicon() -> RedirectResponse:
+    return RedirectResponse("/static/favicon.ico")
 
 
 @app.delete("/", status_code=HTTPStatus.NO_CONTENT, response_class=Response)

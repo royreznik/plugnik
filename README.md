@@ -28,6 +28,9 @@ and `uvicorn` is set to reload mode, which allow you to run the server inside th
 Instruction about how to add the repository to your application can be found in
 JetBrains official documentation [here](https://www.jetbrains.com/help/idea/managing-plugins.html#repos)
 
+## How to upload plugins
+Navigate into `http://server-url/upload.html` and you will have a simple drag&drop for plugins!
+
 ## Docker Image
 ```bash
 docker pull royreznik/plugnik:alpha
