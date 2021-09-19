@@ -60,6 +60,10 @@ async def redirect_upload() -> RedirectResponse:
     return RedirectResponse("/static/upload.html")
 
 
+@app.get("/favicon.ico")
+async def redirect_upload() -> RedirectResponse:
+    return RedirectResponse("/static/favicon.ico")
+
 @app.delete("/", status_code=HTTPStatus.NO_CONTENT, response_class=Response)
 async def delete_plugin(plugin: str, version: str):
     plugin = remove_plugin_xml(plugin, version)
