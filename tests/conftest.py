@@ -40,6 +40,11 @@ def plugin_server(docker_services: Services, server_url: str):
     return docker_services
 
 
-@pytest.fixture()
+@pytest.fixture
 def resources_folder() -> Path:
     return Path(__file__).parent / "resources"
+
+
+@pytest.fixture
+def real_plugins_folder(resources_folder: Path) -> Path:
+    return resources_folder / "real"

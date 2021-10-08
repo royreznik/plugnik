@@ -45,5 +45,6 @@ jobs:
 
       - name: Run tests
         run: |
+          make download
           source .venv/bin/activate
           make test
