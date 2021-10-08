@@ -19,7 +19,7 @@ make run
 
 ## Developing
 ```bash
-make install
+make download
 make run-dev 
 ```
 in development mode the server code is mounted into the container, 
