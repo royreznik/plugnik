@@ -20,7 +20,7 @@ def test_upload_get_delete(
         server_url, resources_folder, f"plugin.{extension}"
     )
 
-    assert upload_response.status_code == HTTPStatus.CREATED
+    assert upload_response.status_code == HTTPStatus.CREATED, upload_response.text
 
     # noinspection SpellCheckingInspection
     expected_plugin_xml = (
@@ -40,7 +40,7 @@ def test_upload_get_delete(
 
     # noinspection SpellCheckingInspection
     delete_response = requests.delete(f"{server_url}/?plugin=Reznik&version=1")
-    assert delete_response.status_code == HTTPStatus.NO_CONTENT
+    assert delete_response.status_code == HTTPStatus.NO_CONTENT, delete_response.text
 
     plugins_xml = requests.get("http://localhost:80/?build=").text
     assert plugins_xml == "<plugins/>"
@@ -96,7 +96,7 @@ def test_upload_two_plugins_once(server_url: str, resources_folder: Path):
         ]
     upload_response = requests.post(f"{server_url}/upload", files=files)
 
-    assert upload_response.status_code == HTTPStatus.CREATED
+    assert upload_response.status_code == HTTPStatus.CREATED, upload_response.text
     plugins_xml = requests.get(f"{server_url}/?build=").text
 
     expected_plugin_xml = (
@@ -129,10 +129,10 @@ def test_upload_two_plugins_once(server_url: str, resources_folder: Path):
     ),
 )
 def test_upload_real_plugins(server_url: str, real_plugins_folder: Path, plugin_name: str):
-    upload_response, _ = upload_resource_plugin(
+    upload_response, plugin_data = upload_resource_plugin(
         server_url, real_plugins_folder, plugin_name
     )
-    assert upload_response.status_code == HTTPStatus.OK, upload_response.text
+    assert upload_response.status_code == HTTPStatus.CREATED, upload_response.text
 
 
 def upload_resource_plugin(
