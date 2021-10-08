@@ -113,6 +113,28 @@ def test_upload_two_plugins_once(server_url: str, resources_folder: Path):
     assert expected_plugin_xml in plugins_xml
 
 
+@pytest.mark.parametrize(
+    ("plugin_name"),
+    (
+        ("Docker-213.4250.391.zip"),
+        ("go-213.4631.20.zip"),
+        ("IdeaVim-1.7.2.zip"),
+        ("intellij-rainbow-brackets-6.21.zip"),
+        ("js-karma-213.4631.9.zip"),
+        ("Key-Promoter-X-2021.2.zip"),
+        ("makefile-213.4250.391.zip"),
+        ("poetry-pycharm-plugin.zip"),
+        ("python-213.4631.20.zip"),
+        ("StringManipulation.zip"),
+    ),
+)
+def test_upload_real_plugins(server_url: str, real_plugins_folder: Path, plugin_name: str):
+    upload_response, _ = upload_resource_plugin(
+        server_url, real_plugins_folder, plugin_name
+    )
+    assert upload_response.status_code == HTTPStatus.OK, upload_response.text
+
+
 def upload_resource_plugin(
     server_url: str,
     resources_folder: Path,
