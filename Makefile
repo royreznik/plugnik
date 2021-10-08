@@ -22,22 +22,40 @@ test:
 	cd tests && poetry run pytest . && cd ..
 
 
-download-js:
-	[ -f ./server/static/jquery.form.js ] && echo "jquery.form.js already exists, skipping" || wget https://malsup.github.io/jquery.form.js -O server/static/jquery.form.js
-	[ -f ./server/static/jquery.uploadfile.min.js ] && echo "jquery.uploadfile.min.js already exists, skipping" || wget http://hayageek.github.io/jQuery-Upload-File/4.0.11/jquery.uploadfile.min.js -O server/static/jquery.uploadfile.min.js
-	[ -f ./server/static/jquery-1.11.1.min.js ] && echo "jquery-1.11.1.min.js already exists, skipping" || wget http://code.jquery.com/jquery-1.11.1.min.js -O server/static/jquery-1.11.1.min.js
+JS_LIST=\
+	"https://malsup.github.io/jquery.form.js" \
+	"http://hayageek.github.io/jQuery-Upload-File/4.0.11/jquery.uploadfile.min.js" \
+	"http://code.jquery.com/jquery-1.11.1.min.js"
+JS_FOLDER=./server/static/
 
+download: download-js download-test-plugins
+
+download-js:
+	for url in $(JS_LIST); do \
+		file_name=$$(echo $$url | sed -nr 's#.*/(.*\.js)#\1#p'); \
+		file_path=$(JS_FOLDER)$$file_name; \
+		test -f $$file_path || wget -O $$file_path $$url; \
+	done
+
+
+
+PLUGINS_LIST=\
+	"https://plugins.jetbrains.com/files/7724/140223/Docker-213.4250.391.zip?updateId=140223&pluginId=7724&family=INTELLIJ" \
+	"https://plugins.jetbrains.com/files/9568/140077/go-213.4631.20.zip?updateId=140077&pluginId=9568&family=INTELLIJ" \
+ 	"https://plugins.jetbrains.com/files/164/139093/IdeaVim-1.7.2.zip?updateId=139093&pluginId=164&family=INTELLIJ" \
+ 	"https://plugins.jetbrains.com/files/10080/134110/intellij-rainbow-brackets-6.21.zip?updateId=134110&pluginId=10080&family=INTELLIJ" \
+ 	"https://plugins.jetbrains.com/files/7287/139807/js-karma-213.4631.9.zip?updateId=139807&pluginId=7287&family=INTELLIJ" \
+ 	"https://plugins.jetbrains.com/files/9792/130615/Key-Promoter-X-2021.2.zip?updateId=130615&pluginId=9792&family=INTELLIJ" \
+ 	"https://plugins.jetbrains.com/files/9333/140246/makefile-213.4250.391.zip?updateId=140246&pluginId=9333&family=INTELLIJ" \
+ 	"https://plugins.jetbrains.com/files/14307/135804/poetry-pycharm-plugin.zip?updateId=135804&pluginId=14307&family=INTELLIJ" \
+ 	"https://plugins.jetbrains.com/files/631/140102/python-213.4631.20.zip?updateId=140102&pluginId=631&family=INTELLIJ" \
+ 	"https://plugins.jetbrains.com/files/2162/139458/StringManipulation.zip?updateId=139458&pluginId=2162&family=INTELLIJ"
+REAL_PLUGINS_DIR=./tests/resources/real/
 
 download-test-plugins:
-	mkdir -p ./tests/resources/real/
-
-	[ -f ./tests/resources/real/Docker-213.4250.391.zip ] || wget -O ./tests/resources/real/Docker-213.4250.391.zip https://plugins.jetbrains.com/files/7724/140223/Docker-213.4250.391.zip?updateId=140223&pluginId=7724&family=INTELLIJ
-	[ -f ./tests/resources/real/go-213.4631.20.zip ] || wget -O ./tests/resources/real/go-213.4631.20.zip https://plugins.jetbrains.com/files/9568/140077/go-213.4631.20.zip?updateId=140077&pluginId=9568&family=INTELLIJ
-	[ -f ./tests/resources/real/IdeaVim-1.7.2.zip ] || wget -O ./tests/resources/real/IdeaVim-1.7.2.zip https://plugins.jetbrains.com/files/164/139093/IdeaVim-1.7.2.zip?updateId=139093&pluginId=164&family=INTELLIJ
-	[ -f ./tests/resources/real/intellij-rainbow-brackets-6.21.zip ] || wget -O ./tests/resources/real/intellij-rainbow-brackets-6.21.zip https://plugins.jetbrains.com/files/10080/134110/intellij-rainbow-brackets-6.21.zip?updateId=134110&pluginId=10080&family=INTELLIJ
-	[ -f ./tests/resources/real/js-karma-213.4631.9.zip ] || wget -O ./tests/resources/real/js-karma-213.4631.9.zip https://plugins.jetbrains.com/files/7287/139807/js-karma-213.4631.9.zip?updateId=139807&pluginId=7287&family=INTELLIJ
-	[ -f ./tests/resources/real/Key-Promoter-X-2021.2.zip ] || wget -O ./tests/resources/real/Key-Promoter-X-2021.2.zip https://plugins.jetbrains.com/files/9792/130615/Key-Promoter-X-2021.2.zip?updateId=130615&pluginId=9792&family=INTELLIJ
-	[ -f ./tests/resources/real/makefile-213.4250.391.zip ] || wget -O ./tests/resources/real/makefile-213.4250.391.zip https://plugins.jetbrains.com/files/9333/140246/makefile-213.4250.391.zip?updateId=140246&pluginId=9333&family=INTELLIJ
-	[ -f ./tests/resources/real/poetry-pycharm-plugin.zip ] || wget -O ./tests/resources/real/poetry-pycharm-plugin.zip https://plugins.jetbrains.com/files/14307/135804/poetry-pycharm-plugin.zip?updateId=135804&pluginId=14307&family=INTELLIJ
-	[ -f ./tests/resources/real/python-213.4631.20.zip ] || wget -O ./tests/resources/real/python-213.4631.20.zip https://plugins.jetbrains.com/files/631/140102/python-213.4631.20.zip?updateId=140102&pluginId=631&family=INTELLIJ
-	[ -f ./tests/resources/real/StringManipulation.zip ] || wget -O ./tests/resources/real/StringManipulation.zip https://plugins.jetbrains.com/files/2162/139458/StringManipulation.zip?updateId=139458&pluginId=2162&family=INTELLIJ
+	mkdir -p $(REAL_PLUGINS_DIR)
+	for url in $(PLUGINS_LIST); do \
+		file_name=$$(echo $$url | sed -nr 's#.*\/(.*)\?.*#\1#p'); \
+		file_path=$(REAL_PLUGINS_DIR)$$file_name; \
+		test -f $$file_path || wget -O $$file_path $$url; \
+	done
