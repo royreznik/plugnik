@@ -48,9 +48,22 @@ def get_all_plugins_xml_string() -> bytes:
 
 def add_new_zip_plugin(zip_fileobject: IO, zip_name: Path) -> str:
     plugin_archive = zipfile.ZipFile(zip_fileobject)
-    inner_jar_name = zip_name.with_suffix(".jar").name
-    inner_jar_path = [i for i in plugin_archive.namelist() if inner_jar_name in i][0]
+    inner_jar_path = _find_jar_plugin(plugin_archive)
     return add_new_jar_plugin(plugin_archive.open(inner_jar_path), zip_name.name)
+
+
+def _find_jar_plugin(zip_file: zipfile.ZipFile) -> str:
+    inner_jars = [i for i in zip_file.namelist() if Path(i).suffix == ".jar"]
+    for jar in inner_jars:
+        try:
+            with zip_file.open(jar) as inner_jar:
+                with zipfile.ZipFile(inner_jar) as inner_jar_file:
+                    if "META-INF/plugin.xml" in inner_jar_file.namelist():
+                        return jar
+        except zipfile.BadZipfile:
+            pass
+    raise ValueError("Couldn't find plugin.xml file inside the jar")
+
 
 
 def add_new_jar_plugin(jar_fileobject: IO, plugin_file_name: str) -> str:
@@ -79,16 +92,19 @@ def _generate_plugin_xml_from_metadata(
     plugin_metadata: Element, plugin_file_name: str, plugin_version: str
 ) -> Element:
     # noinspection PyUnresolvedReferences
+    plugin_name = plugin_metadata.find("name")
+    plugin_id = plugin_metadata.find("id")
+    plugin_id = plugin_id if plugin_id is not None else plugin_name
     new_plugin_xml = etree.Element(
         "plugin",
         attrib={
-            "id": plugin_metadata.find("id").text,
+            "id": plugin_id.text,
             "url": f"/get_plugin/{plugin_file_name}",  # TODO: Make this better
             "version": plugin_version,
         },
     )
     new_plugin_xml.append(plugin_metadata.find("idea-version"))
-    new_plugin_xml.append(plugin_metadata.find("name"))
+    new_plugin_xml.append(plugin_name)
     return new_plugin_xml
 
 
