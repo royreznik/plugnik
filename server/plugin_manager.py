@@ -65,7 +65,6 @@ def _find_jar_plugin(zip_file: zipfile.ZipFile) -> str:
     raise ValueError("Couldn't find plugin.xml file inside the jar")
 
 
-
 def add_new_jar_plugin(jar_fileobject: IO, plugin_file_name: str) -> str:
     plugin_metadata = _get_plugin_metadata_from_jar(jar_fileobject)
     plugin_version = plugin_metadata.find("version").text

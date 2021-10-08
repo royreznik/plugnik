@@ -46,5 +46,5 @@ def resources_folder() -> Path:
 
 
 @pytest.fixture
-def real_plugins_folder(resources_folder) -> Path:
+def real_plugins_folder(resources_folder: Path) -> Path:
     return resources_folder / "real"

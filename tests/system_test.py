@@ -128,7 +128,9 @@ def test_upload_two_plugins_once(server_url: str, resources_folder: Path):
         ("StringManipulation.zip"),
     ),
 )
-def test_upload_real_plugins(server_url: str, real_plugins_folder: Path, plugin_name: str):
+def test_upload_real_plugins(
+    server_url: str, real_plugins_folder: Path, plugin_name: str
+):
     upload_response, plugin_data = upload_resource_plugin(
         server_url, real_plugins_folder, plugin_name
     )

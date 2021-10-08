@@ -3,4 +3,44 @@
     <idea-version since-build="212.4746.13" until-build="*.*"/>
     <name>Reznik</name>
   </plugin>
+  <plugin id="Docker" url="/get_plugin/213.4250.391-Docker-213.4250.391.zip" version="213.4250.391">
+    <idea-version since-build="213.4250" until-build="213.4250.*"/>
+    <name>Docker</name>
+  </plugin>
+  <plugin id="org.jetbrains.plugins.go" url="/get_plugin/213.4631.20-go-213.4631.20.zip" version="213.4631.20">
+    <idea-version since-build="213.4631" until-build="213.4631.*"/>
+    <name>Go</name>
+  </plugin>
+  <plugin id="IdeaVIM" url="/get_plugin/1.7.2-IdeaVim-1.7.2.zip" version="1.7.2">
+    <idea-version since-build="202.5103.13"/>
+    <name>IdeaVim</name>
+  </plugin>
+  <plugin id="izhangzhihao.rainbow.brackets" url="/get_plugin/6.21-intellij-rainbow-brackets-6.21.zip" version="6.21">
+    <idea-version since-build="203"/>
+    <name>Rainbow Brackets</name>
+  </plugin>
+  <plugin id="Key Promoter X" url="/get_plugin/2021.2-Key-Promoter-X-2021.2.zip" version="2021.2">
+    <idea-version since-build="212" until-build="212.*"/>
+    <name>Key Promoter X</name>
+  </plugin>
+  <plugin id="Karma" url="/get_plugin/213.4631.9-js-karma-213.4631.9.zip" version="213.4631.9">
+    <idea-version since-build="213.4631" until-build="213.4631.*"/>
+    <name>Karma</name>
+  </plugin>
+  <plugin id="name.kropp.intellij.makefile" url="/get_plugin/213.4250.391-makefile-213.4250.391.zip" version="213.4250.391">
+    <idea-version since-build="213.4250" until-build="213.4250.*"/>
+    <name>Makefile Language</name>
+  </plugin>
+  <plugin id="String Manipulation" url="/get_plugin/8.17.203.000.0-StringManipulation.zip" version="8.17.203.000.0">
+    <idea-version since-build="203.000"/>
+    <name>String Manipulation</name>
+  </plugin>
+  <plugin id="com.koxudaxi.poetry" url="/get_plugin/1.1.5-212-poetry-pycharm-plugin.zip" version="1.1.5-212">
+    <idea-version since-build="212.4746.13" until-build="212.*"/>
+    <name>Poetry</name>
+  </plugin>
+  <plugin id="Pythonid" url="/get_plugin/213.4631.20-python-213.4631.20.zip" version="213.4631.20">
+    <idea-version since-build="213.4631" until-build="213.4631.*"/>
+    <name>Python</name>
+  </plugin>
 </plugins>
