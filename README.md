@@ -34,5 +34,5 @@ Navigate into `http://server-url/upload` and you will have a simple drag&drop fo
 
 ## Docker Image
 ```bash
-docker pull royreznik/plugnik:alpha
+docker pull royreznik/plugnik:lastest
 ```
